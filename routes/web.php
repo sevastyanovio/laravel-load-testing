@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,4 +15,29 @@
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/join', function (Request $request) {
+    if ($request->has('hire_date')) {
+        return DB::table('employees')
+            ->leftJoin('dept_emp', 'dept_emp.emp_no', '=', 'employees.emp_no')
+            ->where('employees.hire_date', '<', $request->hire_date)
+            ->get();
+    } else {
+        return [
+            'Nothing to search'
+        ];
+    }
+});
+
+Route::get('/select', function (Request $request) {
+    if ($request->has('name')) {
+        return DB::table('employees')
+            ->where('employees.first_name', 'LIKE', '%' . $request->name . '%')
+            ->get();
+    } else {
+        return [
+            'Nothing to search'
+        ];
+    }
 });
